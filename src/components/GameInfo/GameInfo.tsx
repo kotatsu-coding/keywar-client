@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './GameInfo.module.scss'
 import classNames from 'classnames/bind'
-import { player } from '../../types/player'
+import { IPlayer } from '../../types/player'
 import { PlayerCard } from '../PlayerCard/PlayerCard'
 import avatar1 from '../../assets/icons/avatar1.png'
 import avatar2 from '../../assets/icons/avatar2.png'
@@ -12,7 +12,7 @@ import avatar5 from '../../assets/icons/avatar5.png'
 const cx = classNames.bind(styles)
 
 interface IProps {
-  players: Array<player>
+  players: IPlayer[]
 }
 
 const GameInfo: React.FC<IProps> = ({ players }) => {
@@ -21,7 +21,7 @@ const GameInfo: React.FC<IProps> = ({ players }) => {
   return (
     <div className={cx('wrapper')}>
       {players.map((player, idx) => (
-        <PlayerCard key={player.id} player={player} avatar={avatars[idx]} />
+        <PlayerCard key={player.username} player={player} avatar={avatars[idx]} />
       ))}
     </div>
   )

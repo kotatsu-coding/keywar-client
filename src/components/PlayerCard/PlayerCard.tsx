@@ -1,11 +1,11 @@
 import React from 'react'
 import styles from './PlayerCard.module.scss'
 import classNames from 'classnames/bind'
-import { player } from '../../types/player'
+import { IPlayer } from '../../types/player'
 
 const cx = classNames.bind(styles)
 interface IProps {
-  player: player
+  player: IPlayer,
   avatar: any
 }
 

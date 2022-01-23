@@ -1,5 +1,5 @@
-export type player = {
-  id: number
+export interface IPlayer {
+  id: number,
   username: string
   color: string
 }
