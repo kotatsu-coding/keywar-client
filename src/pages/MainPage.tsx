@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { GameRoom } from '../components/Game/GameRoom'
 import { GameInfoContainer } from '../components/GameInfo/GameInfoContainer'
 import { io } from 'socket.io-client'
@@ -7,6 +7,7 @@ import styles from './MainPage.module.scss'
 import { IPlayer } from '../types/player'
 import namer from 'korean-name-generator'
 import { constants } from '../helpers/constants'
+import { useTimer } from '../hooks/useTimer'
 
 const cx = classNames.bind(styles)
 
@@ -30,7 +31,6 @@ type TGameStatus = 'idle' | 'playing' | 'finished'
 
 const MainPage: React.FC = () => {
   const [players, setPlayers] = useState<IPlayer[]>([])
-  const [gametime, setGametime] = useState(constants.GAME_DURATION)
   const [gameStatus, setGameStatus] = useState<TGameStatus>('idle')
   const [gameInfo, setGameInfo] = useState<IGameInfo>({
     teams: [{ 
@@ -49,8 +49,7 @@ const MainPage: React.FC = () => {
     username: `${namer.generate(true)}`,
     color: ''
   })
-
-  
+  const { startTimer, remainingTime } = useTimer(constants.GAME_DURATION)
 
   const handleKeyStroke = (key: string) => {
     if (gameStatus === 'playing') {
@@ -59,7 +58,7 @@ const MainPage: React.FC = () => {
   }
 
   const socket = useRef<any>(null)
-  const intervalID = useRef<any>(null)
+  console.log(gameStatus)
 
   useEffect(() => {
     socket.current = io('http://localhost:5004', {
@@ -90,11 +89,13 @@ const MainPage: React.FC = () => {
     socket.current.on('server game start', (event: any) => {
       console.log('server game start', event)
       setGameStatus('playing')
+      startTimer()
     })
-
+    /*
     socket.current.on('server game finished', () => {
       setGameStatus('finished')
     })
+    */
 
     socket.current.on('current game info', (event: any) => {
       console.log(event.game)
@@ -107,18 +108,11 @@ const MainPage: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (gameStatus === 'playing') {
-      intervalID.current = setInterval(() => {
-        setGametime((prevGametime) => prevGametime - 1)
-      }, 1000)
+    if (remainingTime <= 0) {
+      console.log(remainingTime)
+      setGameStatus('finished')
     }
-  }, [gameStatus])
-
-  useEffect(() => {
-    if (gametime <= 0) {
-      clearInterval(intervalID.current)
-    }
-  })
+  }, [remainingTime])
 
 
   return (
@@ -126,7 +120,7 @@ const MainPage: React.FC = () => {
       <GameInfoContainer players={players} />
       <GameRoom
         socket={socket}
-        gametime={gametime}
+        gametime={remainingTime}
         gameInfo={gameInfo}
         gameStatus={gameStatus}
         onKeyStroke={handleKeyStroke}

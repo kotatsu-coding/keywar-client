@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { GameDisplay } from './GameDisplay'
+import React  from 'react'
 import styles from './GameRoom.module.scss'
 import classNames from 'classnames/bind'
+import { GameDisplay } from './GameDisplay'
+import { GameFinished } from './GameFinished'
+import { constants } from '../../helpers/constants'
 
 const cx = classNames.bind(styles)
 interface IProps {
@@ -20,7 +22,7 @@ const GameRoom: React.FC<IProps> = ({
   onKeyStroke
 }) => {
   const handleStartClick = () => {
-    socket.current.emit('game start', { game_time: 60 })
+    socket.current.emit('game start', { game_time: constants.GAME_DURATION })
   }
 
   return (
@@ -31,7 +33,7 @@ const GameRoom: React.FC<IProps> = ({
     >
       <div className={cx('top')}>
         <div className={cx('score')}>{gameInfo.teams[0].score} {gameInfo.teams[1].score}</div>
-        <div className={cx('timer')}>{gametime}</div>
+        <div className={cx('timer')}>{gametime.toFixed(2)}</div>
       </div>
       <div className={cx('middle')}>
         <GameDisplay team={gameInfo.teams[0]} gameStatus={gameStatus} />
@@ -40,6 +42,12 @@ const GameRoom: React.FC<IProps> = ({
           Start
         </button>
       </div>
+      <GameFinished 
+        isVisible={
+          gameStatus === 'finished'
+        } 
+        gameStart={handleStartClick}
+      />
     </div>
   )
 }
