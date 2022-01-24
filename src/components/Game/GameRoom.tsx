@@ -4,24 +4,26 @@ import classNames from 'classnames/bind'
 import { GameDisplay } from './GameDisplay'
 import { GameFinished } from './GameFinished'
 import { constants } from '../../helpers/constants'
+import { useRecoilValue } from 'recoil'
+import { gameStatusState } from '../../atoms/gameStatus'
+import { gameInfoState } from '../../atoms/gameInfo'
 
 const cx = classNames.bind(styles)
 
 interface IProps {
   socket: any,
   gametime: number,
-  gameInfo: any,
-  gameStatus: string,
   onKeyStroke: (key: string) => void
 }
 
 const GameRoom: React.FC<IProps> = ({
-  gameInfo,
-  gameStatus,
   socket,
   gametime,
   onKeyStroke
 }) => {
+  const gameStatus = useRecoilValue(gameStatusState)
+  const gameInfo = useRecoilValue(gameInfoState)
+
   const handleStartClick = () => {
     socket.current.emit('game start', { game_time: constants.GAME_DURATION })
   }

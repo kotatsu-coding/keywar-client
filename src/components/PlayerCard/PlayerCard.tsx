@@ -18,7 +18,7 @@ const PlayerCard: React.FC<IProps> = ({ isMe, player, avatar }) => {
           me: isMe
         }
       )}>
-        <img className={cx('player__image')} src={avatar} />
+        <img className={cx('player__image')} src={avatar} alt='Cannot show the avatar' />
         <div className={cx('player__name')}>{player.username}</div>
         <span>{player.color}</span>
       </div>

@@ -8,16 +8,17 @@ import avatar2 from '../../assets/icons/avatar2.png'
 import avatar3 from '../../assets/icons/avatar3.png'
 import avatar4 from '../../assets/icons/avatar4.png'
 import avatar5 from '../../assets/icons/avatar5.png'
-import { IMe } from '../../pages/MainPage'
+import { useRecoilValue } from 'recoil'
+import { meState } from '../../atoms/me'
 
 const cx = classNames.bind(styles)
 
 interface IProps {
-  me: IMe,
   players: IPlayer[]
 }
 
-const GameInfo: React.FC<IProps> = ({ me, players }) => {
+const GameInfo: React.FC<IProps> = ({ players }) => {
+  const me = useRecoilValue(meState)
   const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5]
 
   return (

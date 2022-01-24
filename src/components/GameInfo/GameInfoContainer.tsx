@@ -4,14 +4,13 @@ import { IPlayer } from '../../types/player'
 import { IMe } from '../../pages/MainPage'
 
 interface IProps {
-  me: IMe,
   players: IPlayer[]
 }
 
-const GameInfoContainer: React.FC<IProps> = ({ me, players }) => {
+const GameInfoContainer: React.FC<IProps> = ({ players }) => {
   return (
     <aside>
-      <GameInfo me={me} players={players} />
+      <GameInfo players={players} />
     </aside>
   )
 }
