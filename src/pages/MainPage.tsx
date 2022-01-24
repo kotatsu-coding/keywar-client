@@ -11,7 +11,7 @@ import { useTimer } from '../hooks/useTimer'
 
 const cx = classNames.bind(styles)
 
-interface IMe {
+export interface IMe {
   username: string,
   color: string
 }
@@ -91,11 +91,6 @@ const MainPage: React.FC = () => {
       setGameStatus('playing')
       startTimer()
     })
-    /*
-    socket.current.on('server game finished', () => {
-      setGameStatus('finished')
-    })
-    */
 
     socket.current.on('current game info', (event: any) => {
       console.log(event.game)
@@ -117,7 +112,7 @@ const MainPage: React.FC = () => {
 
   return (
     <div className={cx('wrapper')}>
-      <GameInfoContainer players={players} />
+      <GameInfoContainer me={me} players={players} />
       <GameRoom
         socket={socket}
         gametime={remainingTime}

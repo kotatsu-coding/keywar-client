@@ -6,6 +6,7 @@ import { GameFinished } from './GameFinished'
 import { constants } from '../../helpers/constants'
 
 const cx = classNames.bind(styles)
+
 interface IProps {
   socket: any,
   gametime: number,
