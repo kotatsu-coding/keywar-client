@@ -1,15 +1,12 @@
 import { atom } from 'recoil'
-import namer from 'korean-name-generator'
 
 interface IMe {
+  id?: number,
   username: string,
-  color: string
+  color?: string
 }
 
-export const meState = atom<IMe>({
+export const meState = atom<IMe | null>({
   key: 'me',
-  default: {
-    username: `${namer.generate(true)}`,
-    color: ''
-  }
+  default: null
 })

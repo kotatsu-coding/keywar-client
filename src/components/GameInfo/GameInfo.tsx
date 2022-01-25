@@ -24,7 +24,7 @@ const GameInfo: React.FC<IProps> = ({ players }) => {
   return (
     <div className={cx('wrapper')}>
       {players.map((player, idx) => (
-        <PlayerCard isMe={me.username === player.username} key={player.username} player={player} avatar={avatars[idx]} />
+        <PlayerCard isMe={me?.username === player.username} key={player.username} player={player} avatar={avatars[idx]} />
       ))}
     </div>
   )

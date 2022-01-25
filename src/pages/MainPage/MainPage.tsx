@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { GameRoom } from '../components/Game/GameRoom'
-import { GameInfoContainer } from '../components/GameInfo/GameInfoContainer'
+import { GameRoom } from '../../components/Game/GameRoom'
+import { GameInfoContainer } from '../../components/GameInfo/GameInfoContainer'
 import { io } from 'socket.io-client'
 import classNames from 'classnames/bind'
 import styles from './MainPage.module.scss'
-import { IPlayer } from '../types/player'
-import { constants } from '../helpers/constants'
-import { useTimer } from '../hooks/useTimer'
+import { IPlayer } from '../../types/player'
+import { constants } from '../../helpers/constants'
+import { useTimer } from '../../hooks/useTimer'
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { gameStatusState } from '../atoms/gameStatus'
-import { meState } from '../atoms/me'
-import { gameInfoState } from '../atoms/gameInfo'
+import { gameStatusState } from '../../atoms/gameStatus'
+import { meState } from '../../atoms/me'
+import { gameInfoState } from '../../atoms/gameInfo'
 
 const cx = classNames.bind(styles)
 
 const MainPage: React.FC = () => {
+  /*
   const [players, setPlayers] = useState<IPlayer[]>([])
   const [me, setMe] = useRecoilState(meState)
   const [gameStatus, setGameStatus] = useRecoilState(gameStatusState)
@@ -88,6 +89,8 @@ const MainPage: React.FC = () => {
       />
     </div>
   )
+  */
+  return (<div></div>)
 }
 
-export { MainPage }
+export default MainPage

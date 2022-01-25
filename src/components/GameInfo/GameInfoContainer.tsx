@@ -1,7 +1,6 @@
 import React from 'react'
 import { GameInfo } from './GameInfo'
 import { IPlayer } from '../../types/player'
-import { IMe } from '../../pages/MainPage'
 
 interface IProps {
   players: IPlayer[]
