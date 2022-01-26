@@ -1,3 +1,4 @@
+/*
 import React, { useEffect, useRef, useState } from 'react'
 import { GameRoom } from '../../components/Game/GameRoom'
 import { GameInfoContainer } from '../../components/GameInfo/GameInfoContainer'
@@ -12,7 +13,9 @@ import { gameStatusState } from '../../atoms/gameStatus'
 import { meState } from '../../atoms/me'
 import { gameInfoState } from '../../atoms/gameInfo'
 
+
 const cx = classNames.bind(styles)
+*/
 
 const MainPage: React.FC = () => {
   /*

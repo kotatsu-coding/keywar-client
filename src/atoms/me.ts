@@ -3,6 +3,7 @@ import { atom } from 'recoil'
 interface IMe {
   id?: number,
   username: string,
+  is_host: boolean,
   color?: string
 }
 

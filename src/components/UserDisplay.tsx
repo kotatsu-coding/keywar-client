@@ -10,10 +10,19 @@ const UserWrapper = styled.div`
   height: 50%;
 `
 
+const ColorDisplay = styled.div`
+  background: ${props => props.color || 'black'};
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+`
+
+
 const UserDisplay = ({ user }: IUserDisplayProps) => {
   return (
     <UserWrapper>
       { user.username }
+      <ColorDisplay color={user.color} />
     </UserWrapper>
   )
 }

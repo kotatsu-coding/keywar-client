@@ -35,4 +35,4 @@ const useTimer = (totalTime: number) => {
   }
 }
 
-export { useTimer }
+export default useTimer
