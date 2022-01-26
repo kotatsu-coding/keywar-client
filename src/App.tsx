@@ -1,6 +1,5 @@
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
-import { GameRoom } from './components/Game/GameRoom'
 import { LobbyPage, RoomPage } from './pages'
 
 function App() {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { meState } from '../../atoms/me'
 import TeamDisplay from '../../components/TeamDisplay'
 import MainDisplay from '../../components/MainDisplay'
@@ -46,6 +46,12 @@ const TopWrapper = styled.div`
   height: 50px;
 `
 
+const TopContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+`
+
 const MainWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -74,16 +80,16 @@ const RoomPage = () => {
   const [teams, setTeams] = useState<ITeam[]>([])
   const [isJoined, setIsJoined] = useState<boolean>(false)
   const [gameStatus, setGameStatus] = useState<TGameStatus>('idle')
-  const me = useRecoilValue(meState)
+  const [me, setMe] = useRecoilState(meState)
   const history = useHistory()
 
   const handleUsers = (data: any) => {
-    console.log(data.users)
     setUsers(data.users)
   }
 
-  const handleJoined = () => {
+  const handleJoined = (data: any) => {
     setIsJoined(true)
+    setMe(data.user)
   }
 
   const handleRoomFull = () => {
@@ -102,15 +108,96 @@ const RoomPage = () => {
   }
 
   const handleUpdateGame = (data: any) => {
-    setTeams([data.team_1, data.team_2])
+    if (teams.length === 0) {
+      setTeams([data.team_1, data.team_2])
+    } else {
+      let users = teams[0].users.filter(user => user.id === me?.id)
+      if (users.length > 0) {
+        const currentSequence = teams[0].current_word.sequence
+        const serverSequence = data.team_1.current_word.sequence
+        const newSequence = synchronizeSequence(currentSequence, serverSequence)
+        setTeams([{
+          ...data.team_1,
+          current_word: {
+            ...data.team_1.current_word,
+            sequence: newSequence
+          }
+        }, data.team_2])
+      } else {
+        const currentSequence = teams[1].current_word.sequence
+        const serverSequence = data.team_2.current_word.sequence
+        const newSequence = synchronizeSequence(currentSequence, serverSequence)
+        setTeams([data.team_1, {
+          ...data.team_2,
+          current_word: {
+            ...data.team_2.current_word,
+            sequence: newSequence
+          }
+        }])
+      }
+    }
+  }
+
+  const synchronizeSequence = (currentSequence: string[][], serverSequence: string[][]) => {
+    let i = 0
+    let j = 0
+    const newSequence = []
+    while (i < currentSequence.length || j < serverSequence.length) {
+      if (j >= serverSequence.length) {
+        newSequence.push(currentSequence[i])
+        i += 1
+        continue
+      }
+      if (i >= currentSequence.length) {
+        newSequence.push(serverSequence[j])
+        j += 1
+        continue
+      }
+      if (currentSequence[i][0] === serverSequence[j][0] && currentSequence[i][1] === serverSequence[j][1]) {
+        newSequence.push(currentSequence[i])
+        i += 1
+        j += 1
+        continue
+      }
+      newSequence.push(serverSequence[j])
+      j += 1
+    }
+    return newSequence
+  }
+
+  const updateSequence = ([color, key]: string[]) => {
+    let users = teams[0].users.filter(user => user.id === me?.id)
+    if (users.length > 0) {
+      setTeams([{
+        ...teams[0],
+        current_word: {
+          ...teams[0].current_word,
+          sequence: [...teams[0].current_word.sequence, [color, key]]
+        }
+      }, teams[1]])
+    } else {
+      setTeams([teams[0], {
+        ...teams[1],
+        current_word: {
+          ...teams[1].current_word,
+          sequence: [...teams[1].current_word.sequence, [color, key]]
+        }
+      }])
+    }
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (gameStatus === 'playing') {
+    if (me && me.color && gameStatus === 'playing') {
       socket.emit('stroke_key', {
         key: event.key
       })
+
+      updateSequence([me.color, event.key])
     }
+  }
+
+  const handleGameFinished = () => {
+    setGameStatus('finished')
   }
 
   useEffect(() => {
@@ -127,6 +214,7 @@ const RoomPage = () => {
     socket.on('room_full', handleRoomFull)
     socket.on('game_start', handleGameStart)
     socket.on('update_game', handleUpdateGame)
+    socket.on('game_finished', handleGameFinished)
 
     return () => {
       if (socket) {
@@ -142,10 +230,28 @@ const RoomPage = () => {
 
   }, [gameStatus])
 
+  useEffect(() => {
+    if (me?.is_host && remainingTime <= 0) {
+      socket.emit('game_finished')
+    }
+  }, [remainingTime])
+
   return (
     <RoomPageWrapper>
       <TopWrapper>
-        { remainingTime }
+        { teams.length === 2 && 
+          <>
+            <TopContent>
+              Time:{ remainingTime.toFixed(2) }
+            </TopContent>
+            <TopContent>
+              Score (team 1): {teams[0].score}
+            </TopContent>
+            <TopContent>
+              Score (teama 2): {teams[1].score}
+            </TopContent>
+          </>
+      }
       </TopWrapper>
       <MainWrapper 
         onKeyDown={handleKeyDown}
@@ -159,7 +265,7 @@ const RoomPage = () => {
         {
           me?.is_host ? (
             <div>
-              <button onClick={handleClickStart}>Start</button>
+              <button onClick={handleClickStart} disabled={gameStatus === 'playing'}>Start</button>
             </div>
           )
           : (
