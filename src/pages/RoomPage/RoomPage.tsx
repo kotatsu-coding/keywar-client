@@ -111,12 +111,27 @@ const RoomPage = () => {
     setGameStatus('playing')
   }
 
+  const updateMyTeam = (data: ITeam) => {
+    if (!myTeam) setMyTeam(data)
+    else if (data.current_word.current_idx === 0) {
+      setMyTeam(data)
+      const clonedAudio = audioFailRef.current?.cloneNode(true) as HTMLAudioElement
+      clonedAudio.play()
+    }
+    else if (data.current_word.current_idx > myTeam.current_word.current_idx) {
+      setMyTeam(data)
+      const clonedAudio = audioSuccessRef.current?.cloneNode(true) as HTMLAudioElement
+      clonedAudio.play()
+
+    }
+  }
+
   const handleUpdateGame = (data: any) => {
     if (data.team_1.users.map((user: IUser) => user.id).includes(me?.id)) {
-      setMyTeam(data.team_1)
+      updateMyTeam(data.team_1)
       setOpponent(data.team_2)
     } else {
-      setMyTeam(data.team_2)
+      updateMyTeam(data.team_2)
       setOpponent(data.team_1)
     }
   }
@@ -128,8 +143,12 @@ const RoomPage = () => {
       let nextIdx
       if (currentKey === event.key && currentColor === me.color) {
         nextIdx = myTeam.current_word.current_idx + 1
+        const clonedAudio = audioSuccessRef.current?.cloneNode(true) as HTMLAudioElement
+        clonedAudio.play()
       } else {
         nextIdx = 0
+        const clonedAudio = audioFailRef.current?.cloneNode(true) as HTMLAudioElement
+        clonedAudio.play()
       }
       const nextWord = {
         ...myTeam.current_word, 
@@ -184,6 +203,8 @@ const RoomPage = () => {
       socket.emit('game_finished')
     }
   }, [remainingTime])
+
+
 
   return (
     <RoomPageWrapper>
