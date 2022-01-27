@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 import { meState } from '../../atoms/me'
 import TeamDisplay from '../../components/TeamDisplay'
 import MainDisplay from '../../components/MainDisplay'
@@ -38,6 +38,7 @@ const RoomPageWrapper = styled.div`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  padding: 15px 30px;
 `
 
 const TopWrapper = styled.div`
@@ -66,7 +67,7 @@ const ControllerWrapper = styled.div`
 `
 
 const BottomWrapper = styled.div`
-  flex: 1;
+  height: 300px;
 `
 
 type TGameStatus = 'idle' | 'playing' | 'finished'
@@ -77,11 +78,14 @@ const RoomPage = () => {
   const { socket, isUserSynced } = useSocket('room')
   const { startTimer, remainingTime } = useTimer(60)
   const [users, setUsers] = useState<IUser[]>([])
-  const [teams, setTeams] = useState<ITeam[]>([])
+  const [myTeam, setMyTeam] = useState<ITeam>()
+  const [opponent, setOpponent] = useState<ITeam>()
   const [isJoined, setIsJoined] = useState<boolean>(false)
   const [gameStatus, setGameStatus] = useState<TGameStatus>('idle')
   const [me, setMe] = useRecoilState(meState)
   const history = useHistory()
+  const audioSuccessRef = useRef<HTMLAudioElement | null>(null)
+  const audioFailRef = useRef<HTMLAudioElement | null>(null)
 
   const handleUsers = (data: any) => {
     setUsers(data.users)
@@ -108,91 +112,36 @@ const RoomPage = () => {
   }
 
   const handleUpdateGame = (data: any) => {
-    if (teams.length === 0) {
-      setTeams([data.team_1, data.team_2])
+    if (data.team_1.users.map((user: IUser) => user.id).includes(me?.id)) {
+      setMyTeam(data.team_1)
+      setOpponent(data.team_2)
     } else {
-      let users = teams[0].users.filter(user => user.id === me?.id)
-      if (users.length > 0) {
-        const currentSequence = teams[0].current_word.sequence
-        const serverSequence = data.team_1.current_word.sequence
-        const newSequence = synchronizeSequence(currentSequence, serverSequence)
-        setTeams([{
-          ...data.team_1,
-          current_word: {
-            ...data.team_1.current_word,
-            sequence: newSequence
-          }
-        }, data.team_2])
-      } else {
-        const currentSequence = teams[1].current_word.sequence
-        const serverSequence = data.team_2.current_word.sequence
-        const newSequence = synchronizeSequence(currentSequence, serverSequence)
-        setTeams([data.team_1, {
-          ...data.team_2,
-          current_word: {
-            ...data.team_2.current_word,
-            sequence: newSequence
-          }
-        }])
-      }
-    }
-  }
-
-  const synchronizeSequence = (currentSequence: string[][], serverSequence: string[][]) => {
-    let i = 0
-    let j = 0
-    const newSequence = []
-    while (i < currentSequence.length || j < serverSequence.length) {
-      if (j >= serverSequence.length) {
-        newSequence.push(currentSequence[i])
-        i += 1
-        continue
-      }
-      if (i >= currentSequence.length) {
-        newSequence.push(serverSequence[j])
-        j += 1
-        continue
-      }
-      if (currentSequence[i][0] === serverSequence[j][0] && currentSequence[i][1] === serverSequence[j][1]) {
-        newSequence.push(currentSequence[i])
-        i += 1
-        j += 1
-        continue
-      }
-      newSequence.push(serverSequence[j])
-      j += 1
-    }
-    return newSequence
-  }
-
-  const updateSequence = ([color, key]: string[]) => {
-    let users = teams[0].users.filter(user => user.id === me?.id)
-    if (users.length > 0) {
-      setTeams([{
-        ...teams[0],
-        current_word: {
-          ...teams[0].current_word,
-          sequence: [...teams[0].current_word.sequence, [color, key]]
-        }
-      }, teams[1]])
-    } else {
-      setTeams([teams[0], {
-        ...teams[1],
-        current_word: {
-          ...teams[1].current_word,
-          sequence: [...teams[1].current_word.sequence, [color, key]]
-        }
-      }])
+      setMyTeam(data.team_2)
+      setOpponent(data.team_1)
     }
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (me && me.color && gameStatus === 'playing') {
-      socket.emit('stroke_key', {
-        key: event.key
+    if (myTeam && me && me.color && gameStatus === 'playing') {
+      const currentKey = myTeam?.current_word.value[myTeam.current_word.current_idx]
+      const currentColor = myTeam?.current_word.colors[myTeam.current_word.current_idx]
+      let nextIdx
+      if (currentKey === event.key && currentColor === me.color) {
+        nextIdx = myTeam.current_word.current_idx + 1
+      } else {
+        nextIdx = 0
+      }
+      const nextWord = {
+        ...myTeam.current_word, 
+        current_idx: nextIdx
+      }
+      setMyTeam({
+        ...myTeam,
+        current_word: nextWord
       })
-
-      updateSequence([me.color, event.key])
+      socket.emit('stroke_key', {
+        current_word: nextWord
+      })
     }
   }
 
@@ -239,16 +188,16 @@ const RoomPage = () => {
   return (
     <RoomPageWrapper>
       <TopWrapper>
-        { teams.length === 2 && 
+        { myTeam && opponent  &&
           <>
             <TopContent>
               Time:{ remainingTime.toFixed(2) }
             </TopContent>
             <TopContent>
-              Score (team 1): {teams[0].score}
+              Score (My Team): {myTeam.score}
             </TopContent>
             <TopContent>
-              Score (teama 2): {teams[1].score}
+              Score (Opponent): {opponent.score}
             </TopContent>
           </>
       }
@@ -258,7 +207,7 @@ const RoomPage = () => {
         tabIndex={0}
       >
         <TeamDisplay users={users.slice(0, 2)} />
-        <MainDisplay teams={teams} />
+        <MainDisplay teams={(myTeam && opponent) ? [myTeam, opponent] : []} />
         <TeamDisplay users={users.slice(2)} />
       </MainWrapper>
       <ControllerWrapper>
@@ -276,6 +225,8 @@ const RoomPage = () => {
       <BottomWrapper>
         <ChatBox socket={socket} isJoined={isJoined} />
       </BottomWrapper>
+      <audio src="/sound_success.mp3" ref={audioSuccessRef}></audio>
+      <audio src='/sound_fail.mp3' ref={audioFailRef}></audio>
     </RoomPageWrapper>
   )
 }

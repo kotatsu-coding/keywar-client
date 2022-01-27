@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { IUser } from '../pages/RoomPage'
 
@@ -10,6 +10,7 @@ const ChatBoxWrapper = styled.div`
   width: 80%;
   height: 100%;
   border: 1px solid black;
+  box-sizing: border-box;
 
   textarea {
     resize: none;
@@ -31,6 +32,8 @@ const ChatDisplayWrapper = styled.div`
   flex-direction: column;
   flex: 1;
   width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `
 
 const ChatLine = styled.div`
@@ -60,6 +63,7 @@ interface IChat {
 const ChatBox = ({ socket, isJoined }: IChatBox) => {
   const [inputValue, setInputValue] = useState('')
   const [chats, setChats] = useState<IChat[]>([])
+  const bottomRef = useRef<HTMLDivElement>(null)
 
   const handleSend = () => {
     if (isJoined) {
@@ -96,6 +100,11 @@ const ChatBox = ({ socket, isJoined }: IChatBox) => {
       }
     }
   }, [isJoined])
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chats])
+
   return (
     <ChatBoxWrapper>
       <ChatDisplayWrapper>
@@ -106,7 +115,7 @@ const ChatBox = ({ socket, isJoined }: IChatBox) => {
             </ChatLine>
           ))
         }
-
+        <div ref={bottomRef} />
       </ChatDisplayWrapper>
       <InputWrapper>
         <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />
