@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { useRecoilState } from 'recoil'
 import { meState } from '../../atoms/me'
 import useSocket from '../../hooks/useSocket'
 import useTimer from '../../hooks/useTimer'
-import RoomPagePresenter, { TGameStatus } from './RoomPagePresenter'
-import { IUser, ITeam }from '../../types'
+import RoomPagePresenter from './RoomPagePresenter'
 import useAudio from '../../hooks/useAudio'
+import { IUser, ITeam, EAudio, EGameStatus } from '../../types'
 
 interface IRoomPageParams {
   roomId: string 
@@ -20,7 +20,7 @@ const RoomPage = () => {
   const [myTeam, setMyTeam] = useState<ITeam>()
   const [opponent, setOpponent] = useState<ITeam>()
   const [isJoined, setIsJoined] = useState<boolean>(false)
-  const [gameStatus, setGameStatus] = useState<TGameStatus>('idle')
+  const [gameStatus, setGameStatus] = useState<EGameStatus>(EGameStatus.IDLE)
   const [me, setMe] = useRecoilState(meState)
   const history = useHistory()
   const playAudio = useAudio()
@@ -46,18 +46,18 @@ const RoomPage = () => {
 
   const handleGameStart = () => {
     console.log('GAME START!')
-    setGameStatus('playing')
+    setGameStatus(EGameStatus.PLAYING)
   }
 
   const updateMyTeam = (data: ITeam) => {
     if (!myTeam) setMyTeam(data)
     else if (data.current_word.current_idx === 0) {
       setMyTeam(data)
-      playAudio('success')
+      playAudio(EAudio.SUCCESS)
     }
     else if (data.current_word.current_idx > myTeam.current_word.current_idx) {
       setMyTeam(data)
-      playAudio('failure')
+      playAudio(EAudio.FAILURE)
     }
   }
 
@@ -72,16 +72,16 @@ const RoomPage = () => {
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     console.log('KEY DOWN')
-    if (myTeam && me && me.color && gameStatus === 'playing') {
+    if (myTeam && me && me.color && gameStatus === EGameStatus.PLAYING) {
       const currentKey = myTeam?.current_word.value[myTeam.current_word.current_idx]
       const currentColor = myTeam?.current_word.colors[myTeam.current_word.current_idx]
       let nextIdx
       if (currentKey === event.key && currentColor === me.color) {
         nextIdx = myTeam.current_word.current_idx + 1
-        playAudio('success')
+        playAudio(EAudio.SUCCESS)
       } else {
         nextIdx = 0
-        playAudio('failure')
+        playAudio(EAudio.FAILURE)
       }
       const nextWord = {
         ...myTeam.current_word, 
@@ -98,7 +98,7 @@ const RoomPage = () => {
   }
 
   const handleGameFinished = () => {
-    setGameStatus('finished')
+    setGameStatus(EGameStatus.FINISHED)
   }
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const RoomPage = () => {
   }, [isUserSynced])
 
   useEffect(() => {
-    if (gameStatus === 'playing') {
+    if (gameStatus === EGameStatus.PLAYING) {
       startTimer()
     }
 
@@ -136,8 +136,6 @@ const RoomPage = () => {
       socket.emit('game_finished')
     }
   }, [remainingTime])
-
-
 
   return (
     <RoomPagePresenter 

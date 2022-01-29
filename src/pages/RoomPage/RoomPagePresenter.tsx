@@ -1,8 +1,8 @@
-import { ITeam, IUser } from '../../types'
+import { EGameStatus, ITeam, IUser } from '../../types'
 import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
-import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { meState } from '../../atoms/me'
+import styled from 'styled-components'
 
 interface IRoomPagePresenterProps {
   myTeam?: ITeam,
@@ -11,7 +11,7 @@ interface IRoomPagePresenterProps {
   onKeyDown: (event: React.KeyboardEvent) => void,
   users: IUser[],
   startGame: () => void,
-  gameStatus: TGameStatus,
+  gameStatus: EGameStatus,
   socket: any,
   isJoined: boolean,
 }
@@ -54,9 +54,6 @@ const BottomWrapper = styled.div`
   height: 300px;
 `
 
-export type TGameStatus = 'idle' | 'playing' | 'finished'
-
-
 const RoomPagePresenter = ({
   myTeam,
   opponent,
@@ -98,7 +95,7 @@ const RoomPagePresenter = ({
         {
           me?.is_host ? (
             <div>
-              <button onClick={startGame} disabled={gameStatus === 'playing'}>Start</button>
+              <button onClick={startGame} disabled={gameStatus === EGameStatus.PLAYING}>Start</button>
             </div>
           )
           : (

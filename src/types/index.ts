@@ -21,3 +21,14 @@ export interface IRoom {
   id: number,
   users: IUser[]
 }
+
+export enum EAudio {
+  SUCCESS,
+  FAILURE
+}
+
+export enum EGameStatus {
+  IDLE,
+  PLAYING,
+  FINISHED
+}

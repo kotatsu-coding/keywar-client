@@ -1,13 +1,14 @@
 import { createContext, useContext, useRef } from 'react'
+import { EAudio } from '../types'
 
 interface IAudioProviderProps {
   children: React.ReactNode
 }
 
-type TAudioType = 'success' | 'failure'
+
 
 interface IAudioContext {
-  playAudio?: (audioType: TAudioType) => void
+  playAudio?: (audioType: EAudio) => void
 }
 
 const AudioContext = createContext<IAudioContext>({})
@@ -18,13 +19,13 @@ const AudioProvider = ({
   const audioSuccessRef = useRef<HTMLAudioElement | null>(null)
   const audioFailureRef = useRef<HTMLAudioElement | null>(null)
 
-  const playAudio = (audioType: TAudioType) => {
+  const playAudio = (audioType: EAudio) => {
     let clonedAudio
     switch (audioType) {
-      case 'success':
+      case EAudio.SUCCESS:
         clonedAudio = audioSuccessRef.current?.cloneNode(true) as HTMLAudioElement
         break
-      case 'failure':
+      case EAudio.FAILURE:
       default:
         clonedAudio = audioFailureRef.current?.cloneNode(true) as HTMLAudioElement
     }
