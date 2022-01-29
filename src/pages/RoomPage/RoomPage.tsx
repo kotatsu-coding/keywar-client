@@ -127,16 +127,16 @@ const RoomPage = () => {
   }
 
   const handleUpdateGame = (data: any) => {
-    if (data.team_1.users.map((user: IUser) => user.id).includes(me?.id)) {
-      updateMyTeam(data.team_1)
-      setOpponent(data.team_2)
+    console.log('UPDATE GAME', data)
+    if (data.users.map((user: IUser) => user.id).includes(me?.id)) {
+      updateMyTeam(data)
     } else {
-      updateMyTeam(data.team_2)
-      setOpponent(data.team_1)
+      setOpponent(data)
     }
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    console.log('KEY DOWN')
     if (myTeam && me && me.color && gameStatus === 'playing') {
       const currentKey = myTeam?.current_word.value[myTeam.current_word.current_idx]
       const currentColor = myTeam?.current_word.colors[myTeam.current_word.current_idx]
