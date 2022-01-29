@@ -11,7 +11,6 @@ const useSocket = (namespace: string | undefined) => {
 
   useEffect(() => {
     if (socket.current === null) {
-      //socket.current = io(`http://localhost:5004/${namespace}`, {
       socket.current = io(`/${namespace}`, {
         transports: ['websocket'],
       })

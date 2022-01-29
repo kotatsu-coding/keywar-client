@@ -1,8 +1,8 @@
-import { EGameStatus, ITeam, IUser } from '../../types'
-import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
 import { useRecoilValue } from 'recoil'
-import { meState } from '../../atoms/me'
 import styled from 'styled-components'
+import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
+import { EGameStatus, ITeam, IUser } from '../../types'
+import { meState } from '../../atoms/me'
 
 interface IRoomPagePresenterProps {
   myTeam?: ITeam,

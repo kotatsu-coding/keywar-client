@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useRecoilValue } from 'recoil'
 import { meState } from '../../atoms/me'
-import useSocket from '../../hooks/useSocket'
-import LobbyPagePresenter from './LobbyPagePresenter'
+import { useSocket } from '../../hooks'
 import { IRoom } from '../../types'
+import LobbyPagePresenter from './LobbyPagePresenter'
 
 
 const LobbyPage = () => {

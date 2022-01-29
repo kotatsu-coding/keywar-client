@@ -5,8 +5,6 @@ interface IAudioProviderProps {
   children: React.ReactNode
 }
 
-
-
 interface IAudioContext {
   playAudio?: (audioType: EAudio) => void
 }

@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { useRecoilState } from 'recoil'
 import { meState } from '../../atoms/me'
-import useSocket from '../../hooks/useSocket'
-import useTimer from '../../hooks/useTimer'
-import RoomPagePresenter from './RoomPagePresenter'
-import useAudio from '../../hooks/useAudio'
+import { useSocket, useTimer, useAudio } from '../../hooks'
 import { IUser, ITeam, EAudio, EGameStatus } from '../../types'
+import RoomPagePresenter from './RoomPagePresenter'
 
 interface IRoomPageParams {
   roomId: string 
@@ -39,7 +37,7 @@ const RoomPage = () => {
   }
 
   const handleClickStart = () => {
-    if (isUserSynced /*&& users.length === 4*/) {
+    if (isUserSynced && users.length === 4) {
       socket.emit('game_start')
     }
   }
