@@ -14,8 +14,6 @@ interface IRoomPagePresenterProps {
   gameStatus: TGameStatus,
   socket: any,
   isJoined: boolean,
-  audioSuccessRef: React.Ref<HTMLAudioElement>,
-  audioFailRef: React.Ref<HTMLAudioElement>
 }
 
 const RoomPageWrapper = styled.div`
@@ -69,8 +67,6 @@ const RoomPagePresenter = ({
   gameStatus,
   socket,
   isJoined,
-  audioSuccessRef,
-  audioFailRef
 }: IRoomPagePresenterProps) => {
   const me = useRecoilValue(meState)
   return (
@@ -113,8 +109,6 @@ const RoomPagePresenter = ({
       <BottomWrapper>
         <ChatBox socket={socket} isJoined={isJoined} />
       </BottomWrapper>
-      <audio src="/sound_success.mp3" ref={audioSuccessRef}></audio>
-      <audio src='/sound_fail.mp3' ref={audioFailRef}></audio>
     </RoomPageWrapper>
   )
 }

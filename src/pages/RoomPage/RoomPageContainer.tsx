@@ -6,6 +6,7 @@ import useSocket from '../../hooks/useSocket'
 import useTimer from '../../hooks/useTimer'
 import RoomPagePresenter, { TGameStatus } from './RoomPagePresenter'
 import { IUser, ITeam }from '../../types'
+import useAudio from '../../hooks/useAudio'
 
 interface IRoomPageParams {
   roomId: string 
@@ -22,8 +23,7 @@ const RoomPage = () => {
   const [gameStatus, setGameStatus] = useState<TGameStatus>('idle')
   const [me, setMe] = useRecoilState(meState)
   const history = useHistory()
-  const audioSuccessRef = useRef<HTMLAudioElement | null>(null)
-  const audioFailRef = useRef<HTMLAudioElement | null>(null)
+  const playAudio = useAudio()
 
   const handleUsers = (data: any) => {
     setUsers(data.users)
@@ -53,14 +53,11 @@ const RoomPage = () => {
     if (!myTeam) setMyTeam(data)
     else if (data.current_word.current_idx === 0) {
       setMyTeam(data)
-      const clonedAudio = audioFailRef.current?.cloneNode(true) as HTMLAudioElement
-      clonedAudio.play()
+      playAudio('success')
     }
     else if (data.current_word.current_idx > myTeam.current_word.current_idx) {
       setMyTeam(data)
-      const clonedAudio = audioSuccessRef.current?.cloneNode(true) as HTMLAudioElement
-      clonedAudio.play()
-
+      playAudio('failure')
     }
   }
 
@@ -81,12 +78,10 @@ const RoomPage = () => {
       let nextIdx
       if (currentKey === event.key && currentColor === me.color) {
         nextIdx = myTeam.current_word.current_idx + 1
-        const clonedAudio = audioSuccessRef.current?.cloneNode(true) as HTMLAudioElement
-        clonedAudio.play()
+        playAudio('success')
       } else {
         nextIdx = 0
-        const clonedAudio = audioFailRef.current?.cloneNode(true) as HTMLAudioElement
-        clonedAudio.play()
+        playAudio('failure')
       }
       const nextWord = {
         ...myTeam.current_word, 
@@ -155,8 +150,6 @@ const RoomPage = () => {
       gameStatus={gameStatus}
       socket={socket}
       isJoined={isJoined}
-      audioSuccessRef={audioSuccessRef}
-      audioFailRef={audioFailRef}
     />
   )
 }

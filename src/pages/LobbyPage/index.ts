@@ -1,5 +1,4 @@
 import LobbyPageContainer from './LobbyPageContainer'
 import LobbyPagePresenter from './LobbyPagePresenter'
 
-export default LobbyPageContainer
-export { LobbyPagePresenter }
+export { LobbyPagePresenter, LobbyPageContainer as default }
