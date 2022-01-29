@@ -2,76 +2,14 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { useRecoilState } from 'recoil'
 import { meState } from '../../atoms/me'
-import TeamDisplay from '../../components/TeamDisplay'
-import MainDisplay from '../../components/MainDisplay'
-import ChatBox from '../../components/ChatBox'
-import styled from 'styled-components'
 import useSocket from '../../hooks/useSocket'
 import useTimer from '../../hooks/useTimer'
+import RoomPagePresenter, { TGameStatus } from './RoomPagePresenter'
+import { IUser, ITeam }from '../../types'
 
 interface IRoomPageParams {
   roomId: string 
 }
-
-export interface IUser {
-  id: number,
-  username: string,
-  color: string
-}
-
-export interface IWord {
-  value: string,
-  colors: string[],
-  current_idx: number,
-  sequence: string[][]
-}
-
-export interface ITeam {
-  current_word: IWord,
-  score: number,
-  users: IUser[]
-}
-
-const RoomPageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 15px 30px;
-`
-
-const TopWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 50px;
-`
-
-const TopContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 300px;
-`
-
-const MainWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 60%;
-  border: 1px solid black;
-`
-
-const ControllerWrapper = styled.div`
-  height: 50px;
-  display: flex;
-  justify-content: center;
-`
-
-const BottomWrapper = styled.div`
-  height: 300px;
-`
-
-type TGameStatus = 'idle' | 'playing' | 'finished'
-
 
 const RoomPage = () => {
   const { roomId } = useParams<IRoomPageParams>()
@@ -207,48 +145,19 @@ const RoomPage = () => {
 
 
   return (
-    <RoomPageWrapper>
-      <TopWrapper>
-        { myTeam && opponent  &&
-          <>
-            <TopContent>
-              Time:{ remainingTime.toFixed(2) }
-            </TopContent>
-            <TopContent>
-              Score (My Team): {myTeam.score}
-            </TopContent>
-            <TopContent>
-              Score (Opponent): {opponent.score}
-            </TopContent>
-          </>
-      }
-      </TopWrapper>
-      <MainWrapper 
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-      >
-        <TeamDisplay users={users.slice(0, 2)} />
-        <MainDisplay teams={(myTeam && opponent) ? [myTeam, opponent] : []} />
-        <TeamDisplay users={users.slice(2)} />
-      </MainWrapper>
-      <ControllerWrapper>
-        {
-          me?.is_host ? (
-            <div>
-              <button onClick={handleClickStart} disabled={gameStatus === 'playing'}>Start</button>
-            </div>
-          )
-          : (
-            <div></div>
-          )
-        }
-      </ControllerWrapper>
-      <BottomWrapper>
-        <ChatBox socket={socket} isJoined={isJoined} />
-      </BottomWrapper>
-      <audio src="/sound_success.mp3" ref={audioSuccessRef}></audio>
-      <audio src='/sound_fail.mp3' ref={audioFailRef}></audio>
-    </RoomPageWrapper>
+    <RoomPagePresenter 
+      myTeam={myTeam}
+      opponent={opponent}
+      users={users}
+      remainingTime={remainingTime}
+      onKeyDown={handleKeyDown}
+      startGame={handleClickStart}
+      gameStatus={gameStatus}
+      socket={socket}
+      isJoined={isJoined}
+      audioSuccessRef={audioSuccessRef}
+      audioFailRef={audioFailRef}
+    />
   )
 }
 

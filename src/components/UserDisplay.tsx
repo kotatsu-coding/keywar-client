@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { IUser } from '../pages/RoomPage'
+import { IUser } from '../types'
 
 interface IUserDisplayProps {
   user: IUser

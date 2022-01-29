@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { IWord } from '../pages/RoomPage'
+import { IWord } from '../types'
 
 interface IWordDisplayProps {
   word: IWord

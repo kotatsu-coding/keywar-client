@@ -1,3 +1,5 @@
-import LobbyPage from './LobbyPage'
+import LobbyPageContainer from './LobbyPageContainer'
+import LobbyPagePresenter from './LobbyPagePresenter'
 
-export default LobbyPage
+export default LobbyPageContainer
+export { LobbyPagePresenter }

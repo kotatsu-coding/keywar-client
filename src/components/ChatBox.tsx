@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { IUser } from '../pages/RoomPage'
+import { IUser } from '../types'
 
 const ChatBoxWrapper = styled.div`
   display: flex;

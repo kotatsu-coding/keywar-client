@@ -3,37 +3,9 @@ import { useHistory } from 'react-router'
 import { useRecoilValue } from 'recoil'
 import { meState } from '../../atoms/me'
 import useSocket from '../../hooks/useSocket'
-import { IUser } from '../RoomPage'
-import styled from 'styled-components'
+import LobbyPagePresenter from './LobbyPagePresenter'
+import { IRoom } from '../../types'
 
-interface IRoom {
-  id: number,
-  users: IUser[]
-}
-
-const RoomItemBlock = styled.div`
-  border: 1px solid black;
-  width: 100px;
-  cursor: pointer;
-
-  &:hover {
-    background: #eee;
-  }
-`
-
-interface IRoomItemProps {
-  key?: any,
-  onClick: () => void,
-  children: React.ReactNode
-}
-
-const RoomItem = ({ onClick, children }: IRoomItemProps) => {
-  return (
-    <RoomItemBlock onClick={onClick}>
-      { children }
-    </RoomItemBlock>
-  )
-}
 
 const LobbyPage = () => {
   const me = useRecoilValue(meState)
@@ -76,17 +48,11 @@ const LobbyPage = () => {
   }, [socket, isConnected, me])
 
   return (
-    <div>
-      Hi, { me?.username } !
-      <button onClick={createRoom}>Create room</button>
-      {
-        rooms.map((room, index) => (
-          <RoomItem key={index} onClick={() => handleJoinRoom(room.id)}>
-            Room {room.id}
-          </RoomItem>
-        ))
-      }
-    </div>
+    <LobbyPagePresenter 
+      rooms={rooms}
+      createRoom={createRoom}
+      joinRoom={handleJoinRoom}
+    />
   )
 }
 

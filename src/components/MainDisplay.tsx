@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ITeam } from '../pages/RoomPage'
+import { ITeam } from '../types'
 import WordDisplay from './WordDisplay'
 
 const MainWrapper = styled.div`
