@@ -114,12 +114,6 @@ const RoomPage = () => {
     socket.on('game_start', handleGameStart)
     socket.on('update_game', handleUpdateGame)
     socket.on('game_finished', handleGameFinished)
-
-    return () => {
-      if (socket) {
-        socket.off('joined', handleJoined)
-      }
-    }
   }, [isUserSynced])
 
   useEffect(() => {

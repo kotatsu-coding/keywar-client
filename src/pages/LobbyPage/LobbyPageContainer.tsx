@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useRecoilValue } from 'recoil'
 import { meState } from '../../atoms/me'
@@ -40,11 +40,6 @@ const LobbyPage = () => {
 
     socket.on('room', handleNewRoom)
     socket.on('rooms', handleRooms)
-    return () => {
-      if (socket) {
-        socket.off('room', handleNewRoom)
-      }
-    }
   }, [socket, isConnected, me])
 
   return (

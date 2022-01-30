@@ -9,9 +9,10 @@ interface ITeamDisplayProps {
 const TeamDisplayWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
+  justify-content: space-between;
   width: 300px;
   height: 100%;
+  padding: 0 20px;
 `
 
 const TeamDisplay = ({ users }: ITeamDisplayProps) => {

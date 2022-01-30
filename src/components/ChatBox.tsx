@@ -7,9 +7,11 @@ const ChatBoxWrapper = styled.div`
   flex-direction: column;
   margin: auto;
   align-items: center;
+  justify-content: space-between;
   width: 80%;
   height: 100%;
-  border: 1px solid black;
+  background: #eee;
+  padding: 5px 10px;
   box-sizing: border-box;
 
   textarea {
@@ -20,6 +22,10 @@ const ChatBoxWrapper = styled.div`
 const Input = styled.input`
   width: 100%;
   flex: 1;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 3px;
 `
 
 const InputWrapper = styled.div`
@@ -30,8 +36,10 @@ const InputWrapper = styled.div`
 const ChatDisplayWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
   width: 100%;
+  height: 85%;
+  background: #fafafa;
+  border-radius: 3px;
   overflow-y: scroll;
   overflow-x: hidden;
 `

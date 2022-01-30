@@ -28,6 +28,7 @@ const useSocket = (namespace: string | undefined) => {
       setMe(data.user)
       setIsUserSynced(true)
     })
+
     return () => {
       if (socket.current) {
         socket.current.close()
