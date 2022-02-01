@@ -1,11 +1,5 @@
 import { atom } from 'recoil'
-
-interface IMe {
-  id?: number,
-  username: string,
-  is_host: boolean,
-  color?: string
-}
+import { IMe } from '../types'
 
 export const meState = atom<IMe | null>({
   key: 'me',

@@ -44,6 +44,7 @@ const LobbyPage = () => {
 
   return (
     <LobbyPagePresenter 
+      me={me}
       rooms={rooms}
       createRoom={createRoom}
       joinRoom={handleJoinRoom}

@@ -1,10 +1,9 @@
-import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
-import { EGameStatus, ITeam, IUser } from '../../types'
-import { meState } from '../../atoms/me'
+import { EGameStatus, IMe, ITeam, IUser } from '../../types'
 
 interface IRoomPagePresenterProps {
+  me: IMe | null,
   myTeam?: ITeam,
   opponent?: ITeam,
   remainingTime: number,
@@ -54,6 +53,7 @@ const BottomWrapper = styled.div`
 `
 
 const RoomPagePresenter = ({
+  me,
   myTeam,
   opponent,
   remainingTime,
@@ -64,7 +64,6 @@ const RoomPagePresenter = ({
   socket,
   isJoined,
 }: IRoomPagePresenterProps) => {
-  const me = useRecoilValue(meState)
   return (
     <RoomPageWrapper>
       <TopWrapper>

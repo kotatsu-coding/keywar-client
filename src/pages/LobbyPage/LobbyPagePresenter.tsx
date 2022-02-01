@@ -1,7 +1,5 @@
 import React from 'react'
-import { useRecoilValue } from 'recoil'
-import { meState } from '../../atoms/me'
-import { IRoom } from '../../types'
+import { IMe, IRoom } from '../../types'
 import styled from 'styled-components'
 
 
@@ -21,6 +19,13 @@ interface IRoomItemProps {
   children: React.ReactNode
 }
 
+interface ILobbyPagePresenterProps {
+  me: IMe | null,
+  rooms: IRoom[],
+  createRoom: any,
+  joinRoom: (roomId: number) => void
+}
+
 const RoomItem = ({ onClick, children }: IRoomItemProps) => {
   return (
     <RoomItemBlock onClick={onClick}>
@@ -29,18 +34,14 @@ const RoomItem = ({ onClick, children }: IRoomItemProps) => {
   )
 }
 
-interface ILobbyPagePresenterProps {
-  rooms: IRoom[],
-  createRoom: any,
-  joinRoom: (roomId: number) => void
-}
+
 
 const LobbyPagePresenter = ({
+  me,
   rooms,
   createRoom,
   joinRoom 
 }: ILobbyPagePresenterProps) => {
-  const me = useRecoilValue(meState)
   return (
     <div>
       Hi, { me?.username } !

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { IUser } from '../types'
+import { IUser } from '../../types'
 
 const ChatBoxWrapper = styled.div`
   display: flex;
@@ -58,61 +58,28 @@ const BodyDisplay = styled.div`
   flex: 1;
 `
 
-interface IChatBox {
-  socket: any,
-  isJoined: boolean,
+interface IChatBoxPresenterProps {
+  chats: IChat[],
+  bottomRef: React.Ref<HTMLDivElement>,
+  inputValue: string,
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  onSend: () => void,
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-interface IChat {
+export interface IChat {
   user: IUser,
   body: string
 }
 
-const ChatBox = ({ socket, isJoined }: IChatBox) => {
-  const [inputValue, setInputValue] = useState('')
-  const [chats, setChats] = useState<IChat[]>([])
-  const bottomRef = useRef<HTMLDivElement>(null)
-
-  const handleSend = () => {
-    if (isJoined) {
-      socket.emit('chat', {
-        'body': inputValue
-      })
-      setInputValue('')
-    }
-  }
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
-  }
-
-  const handleChats= (data: any) => {
-    setChats(data.chats)
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSend()
-    }
-  }
-
-  useEffect(() => {
-    if (isJoined) {
-      socket.on('chats', handleChats)
-
-      socket.emit('get_chats')
-    }
-    return () => {
-      if (socket) {
-        socket.off('chats', handleChats)
-      }
-    }
-  }, [isJoined])
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [chats])
-
+const ChatBox = ({ 
+  chats, 
+  bottomRef, 
+  inputValue, 
+  onChange, 
+  onSend,
+  onKeyDown
+}: IChatBoxPresenterProps) => {
   return (
     <ChatBoxWrapper>
       <ChatDisplayWrapper>
@@ -126,8 +93,8 @@ const ChatBox = ({ socket, isJoined }: IChatBox) => {
         <div ref={bottomRef} />
       </ChatDisplayWrapper>
       <InputWrapper>
-        <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />
-        <button onClick={handleSend}>전송</button>
+        <Input role='input' value={inputValue} onChange={onChange} onKeyDown={onKeyDown} />
+        <button onClick={onSend}>전송</button>
       </InputWrapper>
     </ChatBoxWrapper>
   )

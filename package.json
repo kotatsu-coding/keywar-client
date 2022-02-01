@@ -11,6 +11,7 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.3.3",
+    "@types/socket.io": "^3.0.2",
     "@types/socket.io-client": "^3.0.0",
     "@types/styled-components": "^5.1.21",
     "classnames": "^2.3.1",
@@ -25,6 +26,8 @@
     "recoil": "^0.5.2",
     "sass": "^1.49.0",
     "sass-loader": "^12.4.0",
+    "socket.io": "^4.4.1",
+    "socket.io-client": "^4.4.1",
     "socketio": "^1.0.0",
     "styled-components": "^5.3.3",
     "typescript": "^4.4.2",
@@ -55,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "http": "^0.0.1-security",
     "http-proxy-middleware": "^2.0.2"
   }
 }

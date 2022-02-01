@@ -1,6 +1,14 @@
+export interface IMe {
+  id?: number,
+  username: string,
+  is_host: boolean,
+  color?: string
+}
+
 export interface IUser {
   id: number,
   username: string,
+  is_host: boolean,
   color: string
 }
 

@@ -131,6 +131,7 @@ const RoomPage = () => {
 
   return (
     <RoomPagePresenter 
+      me={me}
       myTeam={myTeam}
       opponent={opponent}
       users={users}
