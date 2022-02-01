@@ -1,13 +1,15 @@
 interface IEntrancePagePresenterProps {
   inputValue: string,
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  onEnter: () => void
+  onEnter: () => void,
+  onEnterAsAGuest: () => void
 }
 
 const EntrancePagePresenter = ({
   inputValue,
   onChange,
-  onEnter
+  onEnter,
+  onEnterAsAGuest
 }: IEntrancePagePresenterProps) => {
   return (
     <div>
@@ -16,6 +18,9 @@ const EntrancePagePresenter = ({
       <button 
         onClick={onEnter}
       >Enter</button>
+      <button
+        onClick={onEnterAsAGuest}
+      >Enter as a guest</button>
     </div>
   )
 }

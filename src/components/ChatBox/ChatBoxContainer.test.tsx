@@ -1,13 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import ChatBoxContainer from './ChatBoxContainer'
-import { io, serverSocket, cleanUp } from '../../fixtures/socket'
+import { clientSocket, serverSocket, cleanUp, IMockedClientSocket } from '../../fixtures/socket'
 
 
 describe('ChatBoxContainer', () => {
-  let clientSocket
-  beforeEach(() => {
-    clientSocket = io()
-  })
   afterEach(() => {
     cleanUp()
   })
@@ -16,7 +12,6 @@ describe('ChatBoxContainer', () => {
     render((
       <ChatBoxContainer 
         socket={null}
-
         isJoined={false}
       />
     ))

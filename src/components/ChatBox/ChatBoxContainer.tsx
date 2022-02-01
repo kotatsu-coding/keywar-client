@@ -34,7 +34,6 @@ const ChatBoxContainer = ({
   }
 
   const handleChats = (data: any) => {
-    console.log(data)
     setChats(data.chats)
   }
 

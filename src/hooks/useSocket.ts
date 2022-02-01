@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil'
 import { io } from 'socket.io-client'
 import { meState } from '../atoms/me'
 
-const useSocket = (namespace: string | undefined) => {
+const useSocket = (namespace: string = '') => {
   const socket = useRef<any>(null)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isUserSynced, setIsUserSynced] = useState<boolean>(false)
