@@ -1,13 +1,16 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import ChatBoxContainer from './ChatBoxContainer'
+import { io, serverSocket, cleanUp } from '../../fixtures/socket'
 
-const socket = {
-  on: jest.fn(),
-  emit: jest.fn(),
-  off: jest.fn()
-}
 
 describe('ChatBoxContainer', () => {
+  let clientSocket
+  beforeEach(() => {
+    clientSocket = io()
+  })
+  afterEach(() => {
+    cleanUp()
+  })
   it('Input changes value', () => {
     window.HTMLElement.prototype.scrollIntoView = jest.fn()
     render((
@@ -29,7 +32,7 @@ describe('ChatBoxContainer', () => {
   it('Send chat', () => {
     render((
       <ChatBoxContainer 
-        socket={socket}
+        socket={clientSocket}
         isJoined={true}
       />
     ))
@@ -45,9 +48,27 @@ describe('ChatBoxContainer', () => {
       key: 'Enter'
     })
 
-    expect(socket.emit).toBeCalledWith('chat', {
+    expect(clientSocket.emit).toBeCalledWith('chat', {
       body: 'A'
     })
   })
-  // TODO: How to test socket.on handlers ?
+  it('Emitting "chats" event changes array', async () => {
+    const { container } = render((
+      <ChatBoxContainer 
+        socket={clientSocket}
+        isJoined={true}
+      />
+    ))
+
+    serverSocket.emit('chats', {
+      'chats': [{
+        user: {
+          username: 'Test user'
+        },
+        body: 'Test Chat'
+      }
+    ]})
+
+    await waitFor(() => expect(container).toHaveTextContent('Test Chat'))
+  })
 })

@@ -33,7 +33,8 @@ const ChatBoxContainer = ({
     setInputValue(event.target.value)
   }
 
-  const handleChats= (data: any) => {
+  const handleChats = (data: any) => {
+    console.log(data)
     setChats(data.chats)
   }
 
