@@ -37,8 +37,8 @@ const useGame = ({
 
   const updateTeam = (data: IGameTeam) => {
     setGame(prevGame => {
-      const prevTeam = prevGame.teams.filter((team: IGameTeam) => team.id === me?.team_id)[0]
-      if (!prevTeam) {
+      const filteredTeams = prevGame.teams.filter((team: IGameTeam) => team.id === me?.team_id)
+      if (filteredTeams.length === 0) {
         return {
           ...prevGame,
           teams: [data]
@@ -56,14 +56,14 @@ const useGame = ({
   }
 
   const updateMyTeam = (data: IGameTeam) => {
-    const myTeam = game.teams.filter(team => team.id === me?.team_id)[0]
+    const filteredTeam = game.teams.filter(team => team.id === me?.team_id)
 
-    if (!myTeam) updateTeam(data)
+    if (filteredTeam.length === 0) updateTeam(data)
     else if (data.current_word.current_idx === 0) {
       updateTeam(data)
       playAudio(EAudio.SUCCESS)
     }
-    else if (data.current_word.current_idx > myTeam.current_word.current_idx) {
+    else if (data.current_word.current_idx > filteredTeam[0].current_word.current_idx) {
       updateTeam(data)
       playAudio(EAudio.FAILURE)
     }
