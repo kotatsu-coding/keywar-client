@@ -22,7 +22,7 @@ interface IRoomItemProps {
 interface ILobbyPagePresenterProps {
   me: IMe | null,
   rooms: IRoom[],
-  createRoom: any,
+  createRoom: (capacity: number) => void,
   joinRoom: (roomId: number) => void
 }
 
@@ -45,7 +45,8 @@ const LobbyPagePresenter = ({
   return (
     <div>
       Hi, { me?.username } !
-      <button onClick={createRoom}>Create room</button>
+      <button onClick={() => createRoom(4)}>Create room (4 people)</button>
+      <button onClick={() => createRoom(2)}>Create room (2 people)</button>
       {
         rooms.map((room, index) => (
           <RoomItem key={index} onClick={() => joinRoom(room.id)}>

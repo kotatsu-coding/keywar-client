@@ -19,11 +19,15 @@ interface IMainDisplayProps {
 const MainDisplay = ({ teams }: IMainDisplayProps) => {
   return (
     <MainWrapper>
-      { teams.length === 2 && 
-        <>
-          <WordDisplay word={teams[0].current_word} />
-          <WordDisplay word={teams[1].current_word} />
-        </>
+      { teams.length >= 1 && (
+          teams.length === 2 ?
+            <>
+              <WordDisplay word={teams[0].current_word} />
+              <WordDisplay word={teams[1].current_word} />
+            </>
+          :
+            <WordDisplay word={teams[0].current_word} />
+        )
       }
     </MainWrapper>
   )

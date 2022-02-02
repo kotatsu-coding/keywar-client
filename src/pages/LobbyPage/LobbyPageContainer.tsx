@@ -22,8 +22,8 @@ const LobbyPage = () => {
     setRooms(data.rooms)
   }
 
-  const createRoom = () => {
-    socket.emit('create_room')
+  const createRoom = (capacity: number) => {
+    socket.emit('create_room', { capacity })
   }
 
   const handleJoinRoom = (roomId: number) => {

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
-import { EGameStatus, IMe, ITeam, IUser } from '../../types'
+import { EGameStatus, IMe, IRoom, ITeam, IUser } from '../../types'
 
 interface IRoomPagePresenterProps {
   me: IMe | null,
@@ -8,7 +8,7 @@ interface IRoomPagePresenterProps {
   opponent?: ITeam,
   remainingTime: number,
   onKeyDown: (event: React.KeyboardEvent) => void,
-  users: IUser[],
+  room?: IRoom,
   startGame: () => void,
   gameStatus: EGameStatus,
   socket: any,
@@ -58,7 +58,7 @@ const RoomPagePresenter = ({
   opponent,
   remainingTime,
   onKeyDown,
-  users,
+  room,
   startGame,
   gameStatus,
   socket,
@@ -85,9 +85,17 @@ const RoomPagePresenter = ({
         onKeyDown={onKeyDown}
         tabIndex={0}
       >
-        <TeamDisplay users={users.slice(0, 2)} />
-        <MainDisplay teams={(myTeam && opponent) ? [myTeam, opponent] : []} />
-        <TeamDisplay users={users.slice(2)} />
+        <TeamDisplay users={room ? room.users.slice(0, room.capacity / 2) : []} />
+        <MainDisplay teams={
+          myTeam && room && room.capacity === 2 ?
+            [myTeam]
+          :
+          myTeam && opponent && room && room.capacity === 4 ?
+            [myTeam, opponent]
+          :
+            []
+        } />
+        <TeamDisplay users={room ? room.users.slice(room.capacity / 2) : []} />
       </MainWrapper>
       <ControllerWrapper>
         {

@@ -27,7 +27,8 @@ export interface ITeam {
 
 export interface IRoom {
   id: number,
-  users: IUser[]
+  users: IUser[],
+  capacity: number
 }
 
 export enum EAudio {
