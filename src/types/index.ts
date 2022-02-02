@@ -1,5 +1,6 @@
 export interface IMe {
   id?: number,
+  team_id?: number,
   username: string,
   is_host: boolean,
   color?: string
@@ -20,15 +21,25 @@ export interface IWord {
 }
 
 export interface ITeam {
-  current_word: IWord,
-  score: number,
+  id: number,
   users: IUser[]
 }
 
+
 export interface IRoom {
   id: number,
-  users: IUser[],
+  teams: ITeam[],
   capacity: number
+}
+
+export interface IGameTeam extends ITeam {
+  current_word: IWord,
+  score: number
+}
+
+export interface IGame {
+  gameStatus: EGameStatus,
+  teams: IGameTeam[]
 }
 
 export enum EAudio {

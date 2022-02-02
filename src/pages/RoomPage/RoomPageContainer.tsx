@@ -17,19 +17,19 @@ const RoomPage = () => {
   const me = useRecoilValue(meState)
 
   const { room, isJoined } = useRoom({ roomId: parseInt(roomId), socket, isUserSynced })
-  const { startGame, finishGame, myTeam, opponent, gameStatus, handleKeyDown } = useGame({ socket, isJoined })
+  const { startGame, finishGame, game, handleKeyDown } = useGame({ socket, isJoined })
 
   const handleClickStart = () => {
-    if (isUserSynced && room && room.users.length === room.capacity) {
+    if (isUserSynced) {
       startGame()
     }
   }
 
   useEffect(() => {
-    if (gameStatus === EGameStatus.PLAYING) {
+    if (game.gameStatus === EGameStatus.PLAYING) {
       startTimer()
     }
-  }, [gameStatus])
+  }, [game.gameStatus])
 
   useEffect(() => {
     if (me?.is_host && remainingTime <= 0) {
@@ -40,13 +40,11 @@ const RoomPage = () => {
   return (
     <RoomPagePresenter 
       me={me}
-      myTeam={myTeam}
-      opponent={opponent}
       room={room}
+      game={game}
       remainingTime={remainingTime}
       onKeyDown={handleKeyDown}
       startGame={handleClickStart}
-      gameStatus={gameStatus}
       socket={socket}
       isJoined={isJoined}
     />

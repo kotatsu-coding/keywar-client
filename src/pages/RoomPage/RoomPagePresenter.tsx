@@ -1,16 +1,14 @@
 import styled from 'styled-components'
 import { TeamDisplay, MainDisplay, ChatBox } from '../../components'
-import { EGameStatus, IMe, IRoom, ITeam, IUser } from '../../types'
+import { EGameStatus, IMe, IRoom, IGame } from '../../types'
 
 interface IRoomPagePresenterProps {
   me: IMe | null,
-  myTeam?: ITeam,
-  opponent?: ITeam,
   remainingTime: number,
   onKeyDown: (event: React.KeyboardEvent) => void,
   room?: IRoom,
+  game?: IGame,
   startGame: () => void,
-  gameStatus: EGameStatus,
   socket: any,
   isJoined: boolean,
 }
@@ -54,54 +52,44 @@ const BottomWrapper = styled.div`
 
 const RoomPagePresenter = ({
   me,
-  myTeam,
-  opponent,
   remainingTime,
   onKeyDown,
-  room,
   startGame,
-  gameStatus,
+  room,
+  game,
   socket,
   isJoined,
 }: IRoomPagePresenterProps) => {
   return (
     <RoomPageWrapper>
       <TopWrapper>
-        { myTeam && opponent  &&
-          <>
+        <TopContent>
+          Time:{ remainingTime.toFixed(2) }
+        </TopContent>
+        {
+          game?.teams.map(team => (
             <TopContent>
-              Time:{ remainingTime.toFixed(2) }
+              Score (Team {team.id}): {team.score}
             </TopContent>
-            <TopContent>
-              Score (My Team): {myTeam.score}
-            </TopContent>
-            <TopContent>
-              Score (Opponent): {opponent.score}
-            </TopContent>
-          </>
-      }
+          ))
+        }
       </TopWrapper>
       <MainWrapper 
         onKeyDown={onKeyDown}
         tabIndex={0}
       >
-        <TeamDisplay users={room ? room.users.slice(0, room.capacity / 2) : []} />
-        <MainDisplay teams={
-          myTeam && room && room.capacity === 2 ?
-            [myTeam]
-          :
-          myTeam && opponent && room && room.capacity === 4 ?
-            [myTeam, opponent]
-          :
-            []
-        } />
-        <TeamDisplay users={room ? room.users.slice(room.capacity / 2) : []} />
+        <TeamDisplay team={room?.teams[0]} />
+        <MainDisplay teams={game?.teams ?? []} />
+        {
+          room && room.teams.length === 2 &&
+            <TeamDisplay team={room?.teams[1]} />
+        }
       </MainWrapper>
       <ControllerWrapper>
         {
           me?.is_host ? (
             <div>
-              <button onClick={startGame} disabled={gameStatus === EGameStatus.PLAYING}>Start</button>
+              <button onClick={startGame} disabled={game?.gameStatus === EGameStatus.PLAYING}>Start</button>
             </div>
           )
           : (

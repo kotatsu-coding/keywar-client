@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ITeam } from '../types'
+import { IGameTeam } from '../types'
 import WordDisplay from './WordDisplay'
 
 const MainWrapper = styled.div`
@@ -13,7 +13,7 @@ const MainWrapper = styled.div`
 `
 
 interface IMainDisplayProps {
-  teams: ITeam[]
+  teams: IGameTeam[]
 }
 
 const MainDisplay = ({ teams }: IMainDisplayProps) => {

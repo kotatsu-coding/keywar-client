@@ -26,7 +26,13 @@ const useRoom = ({
 
   const handleJoined = (data: any) => {
     setIsJoined(true)
-    setMe(data.user)
+    const newMe = data.user
+    if (newMe.color === 'red' || newMe.color === 'blue') {
+      newMe.team_id = 1
+    } else {
+      newMe.team_id = 2
+    }
+    setMe(newMe)
   }
 
   const handleRoomFull = () => {

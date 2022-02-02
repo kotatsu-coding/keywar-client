@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import { IUser } from '../types'
+import { ITeam} from '../types'
 import UserDisplay from './UserDisplay'
 
 interface ITeamDisplayProps {
-  users: IUser[]
+  team?: ITeam
 }
 
 const TeamDisplayWrapper = styled.div`
@@ -15,10 +15,10 @@ const TeamDisplayWrapper = styled.div`
   padding: 0 20px;
 `
 
-const TeamDisplay = ({ users }: ITeamDisplayProps) => {
+const TeamDisplay = ({ team }: ITeamDisplayProps) => {
   return (
     <TeamDisplayWrapper>
-      { users.map((user, index) => <UserDisplay key={index} user={user}></UserDisplay>)}
+      { team && team.users.map((user, index) => <UserDisplay key={index} user={user}></UserDisplay>)}
     </TeamDisplayWrapper>
   )
 }
