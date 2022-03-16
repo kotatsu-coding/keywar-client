@@ -8,7 +8,7 @@ import EntrancePagePresenter from './EntrancePagePresenter'
 const EntrancePageContainer = () => {
   const history = useHistory()
   const [inputValue, setInputValue] = useState<string>('')
-  const { socket, isConnected } = useSocket('entrance')
+  const { socket } = useSocket('entrance')
   const [me, setMe] = useRecoilState(meState)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +16,7 @@ const EntrancePageContainer = () => {
   }
 
   const handleEnter = () => {
-    if (inputValue.length > 0 && isConnected) {
+    if (inputValue.length > 0 && socket?.connected) {
       socket.emit('set_user', {
         username: inputValue
       })
@@ -32,10 +32,10 @@ const EntrancePageContainer = () => {
   }
 
   useEffect(() => {
-    if (isConnected) {
+    if (socket?.connected) {
       socket.on('set_user', handleSetUser)
     }
-  }, [isConnected])
+  }, [socket?.connected])
 
   useEffect(() => {
     if (me) {

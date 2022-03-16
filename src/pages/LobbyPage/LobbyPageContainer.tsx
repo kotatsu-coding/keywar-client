@@ -9,10 +9,9 @@ import LobbyPagePresenter from './LobbyPagePresenter'
 const LobbyPage = () => {
   const me = useRecoilValue(meState)
   const history = useHistory()
-  const { socket, isConnected } = useSocket('lobby')
+  const { socket } = useSocket('lobby')
   const [rooms, setRooms] = useState<IRoom[]>([])
 
-  
 
   const handleNewRoom = (event: any) => {
     const roomId = event.room_id
@@ -32,15 +31,13 @@ const LobbyPage = () => {
   }
 
   useEffect(() => {
-    if (!me) {
+    if (!me && socket?.connected) {
       socket.emit('create_user')
     }
-  })
+  }, [me, socket, socket?.connected])
 
   useEffect(() => {
-    if (!isConnected) return () => {}
-    console.log('AAAA')
-
+    if (!socket?.connected) return () => {}
     socket.emit('get_rooms')
 
     socket.on('room', handleNewRoom)
@@ -49,7 +46,7 @@ const LobbyPage = () => {
       socket.off('room', handleNewRoom)
       socket.off('rooms', handleRooms)
     }
-  }, [isConnected])
+  }, [socket?.connected])
 
   return (
     <LobbyPagePresenter 
