@@ -6,12 +6,13 @@ import { useSocket } from '../../hooks'
 import { IRoom } from '../../types'
 import LobbyPagePresenter from './LobbyPagePresenter'
 
-
 const LobbyPage = () => {
   const me = useRecoilValue(meState)
   const history = useHistory()
   const { socket, isConnected } = useSocket('lobby')
   const [rooms, setRooms] = useState<IRoom[]>([])
+
+  
 
   const handleNewRoom = (event: any) => {
     const roomId = event.room_id
@@ -31,16 +32,24 @@ const LobbyPage = () => {
   }
 
   useEffect(() => {
-    if (!isConnected) return () => {}
     if (!me) {
       socket.emit('create_user')
     }
+  })
+
+  useEffect(() => {
+    if (!isConnected) return () => {}
+    console.log('AAAA')
 
     socket.emit('get_rooms')
 
     socket.on('room', handleNewRoom)
     socket.on('rooms', handleRooms)
-  }, [socket, isConnected, me])
+    return () => {
+      socket.off('room', handleNewRoom)
+      socket.off('rooms', handleRooms)
+    }
+  }, [isConnected])
 
   return (
     <LobbyPagePresenter 

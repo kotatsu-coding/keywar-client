@@ -49,6 +49,13 @@ const useRoom = ({
       socket.on('room', handleRoom)
       socket.on('room_full', handleRoomFull)
     }
+    return () => {
+      if (socket) {
+        socket.off('joined', handleJoined)
+        socket.off('room', handleRoom)
+        socket.off('room_full', handleRoomFull)
+      }
+    }
   }, [socket, isUserSynced])
 
   return {

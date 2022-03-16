@@ -8,7 +8,7 @@ import EntrancePagePresenter from './EntrancePagePresenter'
 const EntrancePageContainer = () => {
   const history = useHistory()
   const [inputValue, setInputValue] = useState<string>('')
-  const { socket, isConnected } = useSocket()
+  const { socket, isConnected } = useSocket('entrance')
   const [me, setMe] = useRecoilState(meState)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
