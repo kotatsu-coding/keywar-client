@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import { useRecoilValue } from 'recoil'
-import { meState } from '../../atoms/me'
 import { useSocket } from '../../hooks'
+import { useMe } from '../../hooks/useMe'
 import { IRoom } from '../../types'
 import LobbyPagePresenter from './LobbyPagePresenter'
 
 const LobbyPage = () => {
-  const me = useRecoilValue(meState)
   const history = useHistory()
   const { socket } = useSocket('lobby')
   const [rooms, setRooms] = useState<IRoom[]>([])
+  const { me } = useMe()
 
   const createRoom = (capacity: number) => {
     socket.emit('create_room', { capacity })
@@ -20,12 +19,6 @@ const LobbyPage = () => {
     history.push(`/room/${roomId}`)
   }
 
-  useEffect(() => {
-    if (!me && socket?.connected) {
-      socket.emit('create_user')
-    }
-  }, [me, socket, socket?.connected])
-  
   useEffect(() => {
     const handleConnect = () => {
       socket.emit('get_rooms')

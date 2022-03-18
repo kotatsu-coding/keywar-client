@@ -1,34 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useRecoilState } from 'recoil'
-import { meState } from '../../atoms/me'
+import { useMe } from '../../hooks/useMe'
 import EntrancePagePresenter from './EntrancePagePresenter'
 
 const EntrancePageContainer = () => {
   const history = useHistory()
   const [inputValue, setInputValue] = useState<string>('')
-  const [me, setMe] = useRecoilState(meState)
+  const { me, enter } = useMe()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value)
-  }
-
-  const enter = (username?: string) => {
-    fetch('/api/users', {
-      method: 'POST',
-      body: JSON.stringify({
-        username
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      return response.json()
-    }).then(response => {
-      const { user } = response
-      sessionStorage.setItem('keywar-token', user.token)
-      setMe(user)
-    })
   }
 
   const handleEnter = () => {
