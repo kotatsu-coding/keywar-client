@@ -27,7 +27,7 @@ const EntrancePageContainer = () => {
     }).then(response => {
       const { user } = response
       sessionStorage.setItem('keywar-token', user.token)
-      //setMe(user)
+      setMe(user)
     })
   }
 
@@ -45,7 +45,7 @@ const EntrancePageContainer = () => {
     if (me) {
       history.push('/lobby')
     }
-  }, [me])
+  }, [me, history])
 
   return (
     <div>

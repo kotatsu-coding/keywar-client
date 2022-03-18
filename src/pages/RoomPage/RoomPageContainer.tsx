@@ -11,8 +11,10 @@ interface IRoomPageParams {
 }
 
 const RoomPage = () => {
+  return (<div />)
+  /*
   const { roomId } = useParams<IRoomPageParams>()
-  const { socket, isUserSynced } = useSocket('room')
+  const { socket } = useSocket('room')
   const { startTimer, remainingTime } = useTimer(60)
   const me = useRecoilValue(meState)
 
@@ -49,6 +51,7 @@ const RoomPage = () => {
       isJoined={isJoined}
     />
   )
+  */
 }
 
 export default RoomPage
