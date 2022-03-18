@@ -11,8 +11,7 @@ interface ISocketManagerContext {
 
 const manager = new Manager({
   transports: ['websocket'],
-  autoConnect: false,
-  withCredentials: true
+  autoConnect: false
 })
 
 const SocketManagerContext = createContext<ISocketManagerContext>({ manager })
@@ -37,11 +36,7 @@ export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
 
 export const useSocket = (namespace: string = '') => {
   const { manager } = useContext(SocketManagerContext)
-  const socket = useRef<any>(manager.socket(`/${namespace}`, {
-    auth: {
-      token: sessionStorage.getItem('keywar-token')
-    }
-  }))
+  const socket = useRef<any>(manager.socket(`/${namespace}`))
 
   return {
     socket: socket.current
