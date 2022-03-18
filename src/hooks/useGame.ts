@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { meState } from '../atoms/me'
 import { EGameStatus, EAudio, IGameTeam, IGame, IUser } from '../types'
 import useAudio from './useAudio'
+import { useMe } from './useMe'
 
 interface IUseGameProps {
   socket: any,
@@ -17,8 +16,8 @@ const useGame = ({
     gameStatus: EGameStatus.IDLE,
     teams: []
   })
+  const { me } = useMe()
 
-  const me = useRecoilValue(meState)
   const playAudio = useAudio()
 
   const handleGameStart = () => {

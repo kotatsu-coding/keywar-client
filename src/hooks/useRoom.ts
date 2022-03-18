@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import { useSetRecoilState } from 'recoil'
-import { meState } from '../atoms/me'
 import { IRoom } from '../types'
 
 interface IUseRoomProps {
@@ -17,7 +15,6 @@ const useRoom = ({
 }: IUseRoomProps) => {
   const [room, setRoom] = useState<IRoom>()
   const [isJoined, setIsJoined] = useState<boolean>(false)
-  const setMe = useSetRecoilState(meState)
   const history = useHistory()
 
   const handleRoom = (data: any) => {
@@ -32,7 +29,7 @@ const useRoom = ({
     } else {
       newMe.team_id = 2
     }
-    setMe(newMe)
+    // setMe(newMe)
   }
 
   const handleRoomFull = () => {

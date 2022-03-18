@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useRecoilValue } from 'recoil'
-import { meState } from '../../atoms/me'
 import { useSocket, useTimer, useRoom, useGame } from '../../hooks'
 import { EGameStatus } from '../../types'
 import RoomPagePresenter from './RoomPagePresenter'
