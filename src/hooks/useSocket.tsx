@@ -18,13 +18,18 @@ const SocketManagerContext = createContext<ISocketManagerContext>({
 export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
   const managerRef = useRef(new Manager({
     transports: ['websocket'],
-    autoConnect: false
+    autoConnect: false,
+    withCredentials: true
   }))
 
   const manager = managerRef.current
 
   useEffect(() => {
-    const socket = manager.socket('/')
+    const socket = manager.socket('/', {
+      auth: {
+        token: 'abc'
+      }
+    })
     socket.connect()
     return () => {
       socket.disconnect()
@@ -46,6 +51,7 @@ export const useSocket = (namespace: string = '') => {
   const [me, setMe] = useRecoilState(meState)
 
   const handleConnect = () => {
+    console.log(socket.current.io.engine.id)
     if (me) {
       socket.current.emit('user', me)
     }
@@ -58,8 +64,11 @@ export const useSocket = (namespace: string = '') => {
 
   useEffect(() => {
     if (socket.current === null && manager) {
-      socket.current = manager.socket(`/${namespace}`)
-      socket.current.connect()
+      socket.current = manager.socket(`/${namespace}`, {
+        auth: {
+          token: 'abc'
+        }
+      })
     }
     socket.current.on('connect', handleConnect)
     socket.current.on('user', handleUser)
@@ -67,7 +76,6 @@ export const useSocket = (namespace: string = '') => {
       if (socket.current) {
         socket.current.off('connect', handleConnect)
         socket.current.off('user', handleUser)
-        socket.current.disconnect()
       }
     }
   }, [])

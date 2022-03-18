@@ -37,16 +37,23 @@ const LobbyPage = () => {
   }, [me, socket, socket?.connected])
 
   useEffect(() => {
-    if (!socket?.connected) return () => {}
-    socket.emit('get_rooms')
+    const handleConnect = () => {
+      console.log('EMIT')
+      socket.emit('a')
+      socket.emit('b')
 
+      socket.emit('get_rooms')
+    }
+    socket.on('connect', handleConnect)
     socket.on('room', handleNewRoom)
     socket.on('rooms', handleRooms)
+    socket.connect()
     return () => {
       socket.off('room', handleNewRoom)
       socket.off('rooms', handleRooms)
+      socket.disconnect()
     }
-  }, [socket?.connected])
+  }, [socket])
 
   return (
     <LobbyPagePresenter 
