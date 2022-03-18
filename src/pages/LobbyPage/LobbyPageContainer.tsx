@@ -41,6 +41,7 @@ const LobbyPage = () => {
     }
     return () => {
       if (socket) {
+        socket.off('connect', handleConnect)
         socket.off('room', handleNewRoom)
         socket.off('rooms', handleRooms)
         socket.disconnect()

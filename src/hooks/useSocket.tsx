@@ -26,9 +26,11 @@ export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
   },  [])
 
   return (
-    <SocketManagerContext.Provider value={{
-      manager
-    }}>
+    <SocketManagerContext.Provider
+      value={{
+        manager
+      }}
+    >
       { children }
     </SocketManagerContext.Provider>
   )
