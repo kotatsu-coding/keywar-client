@@ -7,7 +7,7 @@ import LobbyPagePresenter from './LobbyPagePresenter'
 
 const LobbyPage = () => {
   const history = useHistory()
-  const { socket } = useSocket('lobby')
+  const { socket, authenticate } = useSocket('lobby')
   const [rooms, setRooms] = useState<IRoom[]>([])
   const { me } = useMe()
 
@@ -18,6 +18,10 @@ const LobbyPage = () => {
   const handleJoinRoom = (roomId: number) => {
     history.push(`/room/${roomId}`)
   }
+
+  useEffect(() => {
+    authenticate()
+  }, [])
 
   useEffect(() => {
     const handleConnect = () => {

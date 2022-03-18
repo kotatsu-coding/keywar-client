@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { Manager } from 'socket.io-client'
 
 interface ISocketManagerProvider {
@@ -6,7 +6,9 @@ interface ISocketManagerProvider {
 }
 
 interface ISocketManagerContext {
-  manager: InstanceType<typeof Manager>
+  manager: InstanceType<typeof Manager>,
+  isAuthenticated: boolean,
+  authenticate: () => void
 }
 
 const manager = new Manager({
@@ -14,21 +16,35 @@ const manager = new Manager({
   autoConnect: false
 })
 
-const SocketManagerContext = createContext<ISocketManagerContext>({ manager })
+const SocketManagerContext = createContext<ISocketManagerContext>({
+  manager,
+  isAuthenticated: false,
+  authenticate: () => {}
+})
 
 export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
-  useEffect(() => {
-    const socket = manager.socket('/')
-    socket.connect()
-    return () => {
-      socket.disconnect()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const authenticate = () => {
+    const socket = manager.socket('/', {
+      auth: {
+        token: sessionStorage.getItem('keywar-token')
+      }
+    })
+    const handleConnect = () => {
+      setIsAuthenticated(true)
+      socket.off('connect', handleConnect)
     }
-  },  [])
+    socket.on('connect', handleConnect)
+    socket.connect()
+  }
 
   return (
     <SocketManagerContext.Provider
       value={{
-        manager
+        manager,
+        isAuthenticated,
+        authenticate
       }}
     >
       { children }
@@ -37,10 +53,11 @@ export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
 }
 
 export const useSocket = (namespace: string = '') => {
-  const { manager } = useContext(SocketManagerContext)
+  const { manager, authenticate, isAuthenticated } = useContext(SocketManagerContext)
   const socket = useRef<any>(manager.socket(`/${namespace}`))
 
   return {
-    socket: socket.current
+    socket: isAuthenticated ? socket.current : null,
+    authenticate
   }
 }
