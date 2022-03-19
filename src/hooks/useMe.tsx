@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 import { IMe } from '../types'
 
 interface IMeProvider {
@@ -7,11 +7,13 @@ interface IMeProvider {
 
 interface IMeContext {
   me: IMe | null,
+  setMe: Dispatch<SetStateAction<null>>,
   enter: (username?: string) => void
 }
 
 const MeContext = createContext<IMeContext>({
   me: null,
+  setMe: () => {},
   enter: () => {}
 })
 
@@ -63,6 +65,7 @@ const MeProvider = ({ children }: IMeProvider) => {
   return (
     <MeContext.Provider value={{
       me,
+      setMe,
       enter
     }}>
       { children }
@@ -71,8 +74,8 @@ const MeProvider = ({ children }: IMeProvider) => {
 }
 
 const useMe = () => {
-  const me = useContext(MeContext)
-  return me
+  const { me, enter, setMe } = useContext(MeContext)
+  return { me, enter, setMe }
 }
 
 export { MeProvider, useMe }

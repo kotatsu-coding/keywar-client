@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { IRoom } from '../types'
+import { useMe } from './useMe'
 
 interface IUseRoomProps {
   roomId: number,
@@ -14,6 +15,7 @@ const useRoom = ({
   const [room, setRoom] = useState<IRoom>()
   const [isJoined, setIsJoined] = useState<boolean>(false)
   const history = useHistory()
+  const { setMe } = useMe()
 
   const handleRoom = (data: any) => {
     setRoom(data.room)
@@ -27,7 +29,7 @@ const useRoom = ({
     } else {
       newMe.team_id = 2
     }
-    // setMe(newMe)
+    setMe(newMe)
   }
 
   const handleRoomFull = () => {
