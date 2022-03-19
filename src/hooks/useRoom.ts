@@ -4,14 +4,12 @@ import { IRoom } from '../types'
 
 interface IUseRoomProps {
   roomId: number,
-  socket: any,
-  isUserSynced: boolean
+  socket: any
 }
 
 const useRoom = ({
   roomId, 
-  socket, 
-  isUserSynced
+  socket
 }: IUseRoomProps) => {
   const [room, setRoom] = useState<IRoom>()
   const [isJoined, setIsJoined] = useState<boolean>(false)
@@ -37,7 +35,7 @@ const useRoom = ({
   }
 
   useEffect(() => {
-    if (socket && isUserSynced) {
+    if (socket) {
       socket.emit('join', {
         room_id: roomId
       })
@@ -53,7 +51,7 @@ const useRoom = ({
         socket.off('room_full', handleRoomFull)
       }
     }
-  }, [socket, isUserSynced])
+  }, [socket])
 
   return {
     room,

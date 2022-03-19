@@ -32,6 +32,10 @@ const MeProvider = ({ children }: IMeProvider) => {
         const { user } = response
         sessionStorage.setItem('keywar-token', user.token)
         setMe(user)
+      }).catch(error => {
+        sessionStorage.removeItem('keywar-token')
+        console.log(error)
+        setMe(null)
       })
     } else {
       setMe(null)

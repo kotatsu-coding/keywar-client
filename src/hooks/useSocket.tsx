@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useRef, useState } from 'react'
 import { Manager } from 'socket.io-client'
 
 interface ISocketManagerProvider {
@@ -36,6 +36,9 @@ export const SocketManagerProvider = ({ children }: ISocketManagerProvider) => {
       socket.off('connect', handleConnect)
     }
     socket.on('connect', handleConnect)
+    socket.on('error', () => {
+      socket.disconnect()
+    })
     socket.connect()
   }
 

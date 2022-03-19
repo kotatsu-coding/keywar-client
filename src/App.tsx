@@ -1,8 +1,23 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { useHistory } from 'react-router'
 import { AudioProvider } from './hooks/useAudio'
-import { MeProvider } from './hooks/useMe'
-import { LobbyPage, EntrancePage } from './pages'
+import { MeProvider, useMe } from './hooks/useMe'
+import { LobbyPage, EntrancePage, RoomPage } from './pages'
 import { SocketManagerProvider } from './hooks/useSocket'
+
+const PrivateRoute = ({ ...props }) => {
+  const { me } = useMe()
+  const history = useHistory()
+
+  if (!me) {
+    history.push('/')
+    return null
+  }
+
+  return (
+    <Route {...props} />
+  )
+}
 
 function App() {
   return (
@@ -12,8 +27,8 @@ function App() {
         <AudioProvider>
           <Switch>
             <Route exact path='/' component={EntrancePage} />
-            <Route path='/lobby' component={LobbyPage} />
-            {/* <Route path='/room/:roomId' component={RoomPage} /> */}
+            <PrivateRoute path='/lobby' component={LobbyPage} />
+            <PrivateRoute path='/room/:roomId' component={RoomPage} />
           </Switch>
         </AudioProvider>
         </MeProvider>

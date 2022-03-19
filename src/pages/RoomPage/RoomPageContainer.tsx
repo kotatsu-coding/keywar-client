@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useParams } from 'react-router'
-import { useRecoilValue } from 'recoil'
 import { useSocket, useTimer, useRoom, useGame } from '../../hooks'
+import { useMe } from '../../hooks/useMe'
 import { EGameStatus } from '../../types'
 import RoomPagePresenter from './RoomPagePresenter'
 
@@ -10,21 +10,29 @@ interface IRoomPageParams {
 }
 
 const RoomPage = () => {
-  return (<div />)
-  /*
   const { roomId } = useParams<IRoomPageParams>()
   const { socket } = useSocket('room')
   const { startTimer, remainingTime } = useTimer(60)
-  const me = useRecoilValue(meState)
+  const { me } = useMe()
 
-  const { room, isJoined } = useRoom({ roomId: parseInt(roomId), socket, isUserSynced })
+  const { room, isJoined } = useRoom({ roomId: parseInt(roomId), socket })
   const { startGame, finishGame, game, handleKeyDown } = useGame({ socket, isJoined })
 
   const handleClickStart = () => {
-    if (isUserSynced) {
-      startGame()
-    }
+    startGame()
   }
+
+  useEffect(() => {
+    if (socket) {
+      socket.connect()
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect()
+      }
+    }
+  }, [socket])
 
   useEffect(() => {
     if (game.gameStatus === EGameStatus.PLAYING) {
@@ -50,7 +58,6 @@ const RoomPage = () => {
       isJoined={isJoined}
     />
   )
-  */
 }
 
 export default RoomPage
